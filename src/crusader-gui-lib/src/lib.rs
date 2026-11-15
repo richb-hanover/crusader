@@ -832,7 +832,7 @@ impl Tester {
                             Line::new(PlotPoints::from_iter(
                                 [[loss, s], [loss, s - s / 5.0]].iter().copied(),
                             ))
-                            .width(3.0)
+                            .width(3.0_f32)
                             .color(color),
                         );
                     }
@@ -1276,7 +1276,7 @@ impl Tester {
                     }
 
                     plot.show(ui, |plot_ui| {
-                        let width = 1.0;
+                        let width = 1.0_f32;
                         if let Some(data) = result.download.as_ref() {
                             let download = data.iter().map(|v| [v.0, v.1]);
                             let download = Line::new(PlotPoints::from_iter(download))
@@ -1336,7 +1336,7 @@ impl Tester {
                                         .gamma_multiply(alpha),
                                 )
                                 .allow_hover(false)
-                                .width(3.5)
+                                .width(3.5_f32)
                                 .name("Download");
 
                             plot_ui.line(download);
@@ -1350,7 +1350,7 @@ impl Tester {
                                         .gamma_multiply(alpha),
                                 )
                                 .allow_hover(false)
-                                .width(3.5)
+                                .width(3.5_f32)
                                 .name("Upload");
 
                             plot_ui.line(upload);
@@ -1364,7 +1364,7 @@ impl Tester {
                                         .gamma_multiply(alpha),
                                 )
                                 .allow_hover(false)
-                                .width(3.5)
+                                .width(3.5_f32)
                                 .name("Download");
 
                             plot_ui.line(download);
@@ -1378,7 +1378,7 @@ impl Tester {
                                         .gamma_multiply(alpha),
                                 )
                                 .allow_hover(false)
-                                .width(3.5)
+                                .width(3.5_f32)
                                 .name("Upload");
 
                             plot_ui.line(upload);
@@ -1392,7 +1392,7 @@ impl Tester {
                                         .gamma_multiply(alpha),
                                 )
                                 .allow_hover(false)
-                                .width(3.5)
+                                .width(3.5_f32)
                                 .name("Aggregate");
 
                             plot_ui.line(both);
@@ -1945,7 +1945,7 @@ impl Tester {
                         Line::new(PlotPoints::from_iter(
                             [[loss, s], [loss, s - s / 5.0]].iter().copied(),
                         ))
-                        .width(3.0)
+                        .width(3.0_f32)
                         .color(color),
                     );
                 }

@@ -16,6 +16,7 @@ egui_extras = { version = "0.28.1", default-features = false }
 open = "5.3.0"
 
 [target.'cfg(not(target_os = "android"))'.dependencies]
-rfd = { version = "0.10.0", default-features = false, features = [
+rfd = { version = "0.15", default-features = false, features = [
     "xdg-portal",
+    "async-std",
 ] }
