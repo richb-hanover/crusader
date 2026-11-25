@@ -212,7 +212,7 @@ pub async fn run_peer(
             let reply: ServerMessage = receive(&mut control_rx).await?;
             match reply {
                 ServerMessage::LatencyMeasures(measures) => {
-                    latencies.extend(measures.into_iter());
+                    latencies.extend(measures);
                 }
                 ServerMessage::MeasurementsDone { overload } => {
                     overload_ = overload;

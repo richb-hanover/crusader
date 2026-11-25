@@ -295,7 +295,7 @@ pub(crate) async fn test_async(
                     throughput.push((stream, time, bytes));
                 }
                 ServerMessage::LatencyMeasures(measures) => {
-                    latencies.extend(measures.into_iter());
+                    latencies.extend(measures);
                 }
                 ServerMessage::MeasurementsDone { overload } => {
                     overload_ = overload;
