@@ -18,6 +18,9 @@ jobs:
         with:
           components: rustfmt, clippy
 
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev
+
       - name: Build server-only binary
         run: cargo build -p crusader --no-default-features
         working-directory: src
@@ -62,6 +65,8 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
 
       - name: Build Android Rust crates
         working-directory: android
