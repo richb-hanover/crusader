@@ -11,32 +11,27 @@ jobs:
   create-release:
     name: create-release
     runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.release.outputs.upload_url }}
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Get the release version from the tag
-        shell: bash
-        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - uses: actions/checkout@v7
 
       - name: Create GitHub release
-        id: release
-        uses: actions/create-release@v1.1.4
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.TAG_NAME }}
-          release_name: Automated build of ${{ env.TAG_NAME }}
-          prerelease: true
-          body_path: .github/workflows/release.md
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          gh release create "${{ github.ref_name }}"
+          --repo "${{ github.repository }}"
+          --title "Automated build of ${{ github.ref_name }}"
+          --notes-file .github/workflows/release.md
+          --prerelease
 
   release-assets:
     name: Release assets
     needs: create-release
     runs-on: ${{ matrix.build.os }}
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -90,13 +85,11 @@ jobs:
             cargo: cargo
             gui: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
 
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          override: true
-          target: ${{ matrix.build.target }}
+          targets: ${{ matrix.build.target }}
 
       - name: Install cross
         if: matrix.build.cargo == 'cross'
@@ -105,6 +98,7 @@ jobs:
       - name: Install and use musl
         if: matrix.build.os == 'ubuntu-latest' && matrix.build.cargo != 'cross'
         run: |
+          sudo apt-get update
           sudo apt-get install -y --no-install-recommends musl-tools
           echo "CC=musl-gcc" >> $GITHUB_ENV
           echo "AR=ar" >> $GITHUB_ENV
@@ -134,7 +128,7 @@ jobs:
         if: matrix.build.gui
         shell: bash
         run: |
-          cp src/target/${{ matrix.build.target }}/release/crusader-gui${{ matrix.build.exe_postfix }} "crusader-${{ matrix.build.friendly }}/"
+          cp src/target/${{ matrix.build.target }}/release/crusader-gui${{ matrix.build.exe_postfix }} "Crusader-${{ matrix.build.friendly }}/"
 
       - name: Archive output
         if: matrix.build.os == 'windows-latest'
@@ -153,46 +147,37 @@ jobs:
           echo "ASSET=$staging.tar.gz" >> $GITHUB_ENV
 
       - name: Upload archive
-        uses: actions/upload-release-asset@v1.0.2
+        shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_name: ${{ env.ASSET }}
-          asset_path: ${{ env.ASSET }}
-          asset_content_type: application/octet-stream
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.ref_name }}" "$ASSET" --repo "${{ github.repository }}"
 
   release-android-assets:
     name: Android APK
     needs: create-release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
 
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          override: true
-
-      - name: Install Rust targets
-        run: >
-          rustup target add
-          aarch64-linux-android
-          armv7-linux-androideabi
-          x86_64-linux-android
-          i686-linux-android
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android
 
       - name: Install cargo-ndk
         run: cargo install cargo-ndk
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: '17'
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
 
       - name: Build Android Rust crates
         working-directory: android
@@ -218,11 +203,8 @@ jobs:
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
 
       - name: Upload APK
-        uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_name: Crusader-Android.apk
-          asset_path: android/app/build/outputs/apk/release/app-release.apk
-          asset_content_type: application/octet-stream
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk Crusader-Android.apk
+          gh release upload "${{ github.ref_name }}" Crusader-Android.apk --repo "${{ github.repository }}"

@@ -173,7 +173,7 @@ pub(crate) async fn read_data(
     until: Instant,
     writer_done: oneshot::Receiver<()>,
 ) -> Result<bool, anyhow::Error> {
-    stream.set_linger(Some(Duration::from_secs(0))).ok();
+    stream.set_zero_linger().ok();
 
     let reading_done = Arc::new(AtomicBool::new(false));
 
@@ -265,7 +265,7 @@ pub(crate) async fn write_data(
     until: Instant,
 ) -> Result<(), anyhow::Error> {
     stream.set_nodelay(false).ok();
-    stream.set_linger(Some(Duration::from_secs(0))).ok();
+    stream.set_zero_linger().ok();
 
     let done = Arc::new(AtomicBool::new(false));
     let done_ = done.clone();
@@ -447,7 +447,7 @@ pub(crate) async fn measure_latency(
             let reply: ServerMessage = receive(&mut control_rx).await?;
             match reply {
                 ServerMessage::LatencyMeasures(measures) => {
-                    latencies.extend(measures.into_iter());
+                    latencies.extend(measures);
                 }
                 ServerMessage::MeasurementsDone { .. } => break,
                 _ => bail!("Unexpected message {:?}", reply),

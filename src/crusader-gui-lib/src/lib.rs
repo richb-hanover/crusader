@@ -933,7 +933,7 @@ impl Tester {
                             FileDialog::new()
                                 .add_filter("Crusader Raw Result", &["crr"])
                                 .add_filter("All files", &["*"])
-                                .set_file_name(&format!("{}.crr", timed("test")))
+                                .set_file_name(format!("{}.crr", timed("test")))
                                 .save_file()
                                 .map(|file| {
                                     if self
@@ -1038,7 +1038,7 @@ impl Tester {
                             let mut dialog = FileDialog::new()
                                 .add_filter("Portable Network Graphics", &["png"])
                                 .add_filter("All files", &["*"])
-                                .set_file_name(&format!("{}.png", name));
+                                .set_file_name(format!("{}.png", name));
 
                             if let Some(file) = self.raw_result_saved.as_ref() {
                                 if let Some(parent) = file.parent() {

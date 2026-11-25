@@ -158,9 +158,7 @@ async fn test_async(
     let latency_filter =
         Duration::from_secs_f64(latency.as_secs_f64() * 1.01) + Duration::from_micros(500);
 
-    let mut samples: VecDeque<u64> = iter::repeat(server_time_offset)
-        .take(sample_count)
-        .collect();
+    let mut samples: VecDeque<u64> = iter::repeat_n(server_time_offset, sample_count).collect();
 
     let udp_socket = Arc::new(net::UdpSocket::bind(local_udp).await?);
     udp_socket.connect(server).await?;
