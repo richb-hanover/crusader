@@ -19,5 +19,3 @@ lto = "fat"
 inherits = "speed"
 opt-level = "z"
 
-[patch.crates-io]
-egui_plot = { git = "https://github.com/Zoxc/egui_plot", branch = "crusader" }

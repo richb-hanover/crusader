@@ -9,5 +9,5 @@ edition = "2021"
 crusader-lib = { path = "../crusader-lib" }
 crusader-gui-lib = { path = "../crusader-gui-lib" }
 env_logger = "0.10.0"
-eframe = "0.28.1"
+eframe = "0.31"
 font-kit = "0.14.2"

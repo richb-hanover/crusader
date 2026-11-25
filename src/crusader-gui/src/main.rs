@@ -12,7 +12,6 @@ use crusader_lib::version;
 use eframe::{
     egui::{self, Context, FontData, FontDefinitions, FontFamily},
     emath::vec2,
-    Theme,
 };
 #[allow(unused_imports)]
 use font_kit::family_name::FamilyName;
@@ -21,9 +20,7 @@ use font_kit::{handle::Handle, properties::Properties, source::SystemSource};
 fn main() {
     env_logger::init();
 
-    let mut options = eframe::NativeOptions::default();
-    options.follow_system_theme = false;
-    options.default_theme = Theme::Light;
+    let options = eframe::NativeOptions::default();
 
     crusader_lib::plot::register_fonts();
 
@@ -36,6 +33,7 @@ fn main() {
         options,
         Box::new(move |cc| {
             let ctx = &cc.egui_ctx;
+            ctx.set_theme(egui::Theme::Light);
             let mut style = ctx.style();
             let style_ = Arc::make_mut(&mut style);
 
@@ -107,7 +105,7 @@ fn load_system_font(ctx: &Context) -> Result<(), Box<dyn Error>> {
 
     fonts
         .font_data
-        .insert(UI_FONT.to_owned(), FontData::from_owned(buf));
+        .insert(UI_FONT.to_owned(), Arc::new(FontData::from_owned(buf)));
 
     if let Some(vec) = fonts.families.get_mut(&FontFamily::Proportional) {
         vec.insert(0, UI_FONT.to_owned());

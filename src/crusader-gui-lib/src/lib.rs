@@ -369,9 +369,9 @@ fn hover_popup(
 
         let style = ui.style_mut();
 
-        style.visuals.widgets.inactive.rounding = 50.0.into();
-        style.visuals.widgets.hovered.rounding = 50.0.into();
-        style.visuals.widgets.active.rounding = 50.0.into();
+        style.visuals.widgets.inactive.corner_radius = 50.into();
+        style.visuals.widgets.hovered.corner_radius = 50.into();
+        style.visuals.widgets.active.corner_radius = 50.into();
         style.visuals.widgets.inactive.fg_stroke.color = Color32::from_gray(140);
 
         if active_value {
@@ -683,10 +683,10 @@ impl Tester {
 
             // Latency
             let mut plot = Plot::new((peer, "ping"))
-                .legend(Legend::default().insertion_order(true))
+                .legend(Legend::default().follow_insertion_order(true))
                 .y_axis_min_width(y_axis_size)
-                .link_axis(link, true, false)
-                .link_cursor(link, true, false)
+                .link_axis(link, [true, false])
+                .link_cursor(link, [true, false])
                 .include_x(0.0)
                 .include_x(duration)
                 .include_y(0.0)
@@ -792,8 +792,8 @@ impl Tester {
                 .show_grid(Vec2b::new(true, false))
                 .y_axis_min_width(y_axis_size)
                 .y_axis_formatter(|_, _| String::new())
-                .link_axis(link, true, false)
-                .link_cursor(link, true, false)
+                .link_axis(link, [true, false])
+                .link_cursor(link, [true, false])
                 .center_y_axis(true)
                 .allow_zoom(false)
                 .allow_boxed_zoom(false)
@@ -1257,11 +1257,11 @@ impl Tester {
                         .legend(
                             Legend::default()
                                 .color_conflict_handling(ColorConflictHandling::PickFirst)
-                                .insertion_order(true),
+                                .follow_insertion_order(true),
                         )
                         .y_axis_min_width(y_axis_size)
-                        .link_axis(link, true, false)
-                        .link_cursor(link, true, false)
+                        .link_axis(link, [true, false])
+                        .link_cursor(link, [true, false])
                         .include_x(0.0)
                         .include_x(duration)
                         .include_y(0.0)
@@ -1834,9 +1834,9 @@ impl Tester {
 
             // Latency
             let mut plot = Plot::new("latency-ping")
-                .legend(Legend::default().insertion_order(true))
-                .link_axis(link, true, false)
-                .link_cursor(link, true, false)
+                .legend(Legend::default().follow_insertion_order(true))
+                .link_axis(link, [true, false])
+                .link_cursor(link, [true, false])
                 .include_x(-duration)
                 .include_x(0.0)
                 .include_x(duration * 0.20)
@@ -1902,8 +1902,8 @@ impl Tester {
                 .show_grid(Vec2b::new(true, false))
                 .y_axis_min_width(y_axis_size)
                 .y_axis_formatter(|_, _| String::new())
-                .link_axis(link, true, false)
-                .link_cursor(link, true, false)
+                .link_axis(link, [true, false])
+                .link_cursor(link, [true, false])
                 .center_y_axis(true)
                 .allow_zoom(false)
                 .allow_boxed_zoom(false)
