@@ -9,6 +9,12 @@ This file lists the changes that have occurred since January 2024 in the project
 
 ## Unreleased
 
+## 0.3.3 - 2026-11-24
+
+* Fix build with newer rustc (1.100)
+* Upgrade rfd to 0.15
+* Upgrade egui/eframe to 0.31 and drop the egui_plot fork
+
 ## 0.3.2 - 2024-10-03
 
 * Fix saved raw data path printed after a test
