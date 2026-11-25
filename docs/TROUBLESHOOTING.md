@@ -11,6 +11,16 @@
   You must use **System Preferences -> Privacy & Security**
   to approve Crusader to run.
 
+* On macOS, if a test to another computer fails with
+  `Failed to connect to server` ... `No route to host (os error 65)`
+  (while tests to `127.0.0.1` work),
+  macOS is blocking Crusader's access to the local network.
+  Use **System Settings -> Privacy & Security -> Local Network**
+  to allow access for the app that launches Crusader
+  (your terminal app, such as Terminal or iTerm2,
+  if you run Crusader from the command line),
+  then quit and relaunch that app.
+
 * The message
   `Warning: Load termination timed out. There may be residual untracked traffic in the background.`
   is not necessarily harmful.
