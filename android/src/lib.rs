@@ -6,7 +6,7 @@
 
 use crusader_gui_lib::Tester;
 use crusader_lib::file_format::RawResult;
-use eframe::egui::{self, vec2, Align, FontFamily, Layout};
+use eframe::egui::{self, vec2, Align, FontFamily, Layout, UiBuilder};
 use jni::{
     objects::{JClass, JObject, JString},
     sys::{jboolean, jbyteArray},
@@ -23,7 +23,7 @@ use std::{
 use {
     android_activity::AndroidApp,
     crusader_lib::test::PlotConfig,
-    eframe::{NativeOptions, Renderer, Theme},
+    eframe::{NativeOptions, Renderer},
     log::Level,
     std::fs,
     winit::platform::android::EventLoopBuilderExtAndroid,
@@ -61,7 +61,11 @@ impl eframe::App for App {
             let mut rect = ui.max_rect();
             rect.set_top(rect.top() + 40.0);
             rect.set_height(rect.height() - 60.0);
-            let mut ui = ui.child_ui(rect, Layout::left_to_right(Align::Center), None);
+            let mut ui = ui.new_child(
+                UiBuilder::new()
+                    .max_rect(rect)
+                    .layout(Layout::left_to_right(Align::Center)),
+            );
             ui.vertical(|ui| {
                 ui.heading("Crusader Network Benchmark");
                 ui.separator();
@@ -171,8 +175,6 @@ fn android_main(app: AndroidApp) {
     let temp_plot = app.internal_data_path().map(|path| path.join("plot.png"));
 
     let mut options = NativeOptions::default();
-    options.follow_system_theme = false;
-    options.default_theme = Theme::Light;
     options.renderer = Renderer::Wgpu;
     options.event_loop_builder = Some(Box::new(move |builder| {
         builder.with_android_app(app.clone());
@@ -197,7 +199,8 @@ fn android_main(app: AndroidApp) {
     eframe::run_native(
         "Crusader Network Tester",
         options,
-        Box::new(|_cc| {
+        Box::new(|cc| {
+            cc.egui_ctx.set_theme(egui::Theme::Light);
             Ok(Box::new(App {
                 tester,
                 keyboard_shown: false,
